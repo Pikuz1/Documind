@@ -1,0 +1,14 @@
+fastapi                      # REST API framework (Flask-like, typed)
+uvicorn[standard]            # ASGI server that runs FastAPI
+pydantic-settings            # typed settings from .env
+python-multipart             # file uploads (PDF) in FastAPI
+langchain-core               # LangChain base: Document, prompts, runnables, fake models
+langchain-community           # PyPDFLoader
+langchain-text-splitters     # RecursiveCharacterTextSplitter
+langchain-chroma              # LangChain <-> ChromaDB integration
+langchain-huggingface         # local embedding models in LangChain
+langchain-anthropic           # Claude chat model
+chromadb                      # the vector database
+pypdf                         # PDF text extraction (used by PyPDFLoader)
+sentence-transformers         # runs the embedding model locally (pulls in PyTorch)
+numpy                         # vector maths; needed by fake embeddings and the labs

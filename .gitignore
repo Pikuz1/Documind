@@ -1,0 +1,20 @@
+# Python
+.venv/
+__pycache__/
+.pytest_cache/
+.coverage
+htmlcov/
+.ruff_cache/
+# Secrets & local data
+.env
+backend/data/
+backend/.e2e-data/
+# Node
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+# Local dev notes (not published)
+CLAUDE.md
+docs/PLAN.md

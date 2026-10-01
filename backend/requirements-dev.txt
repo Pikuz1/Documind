@@ -1,0 +1,6 @@
+-r requirements.txt
+pytest                       # test runner
+pytest-cov                   # coverage + the 100% gate
+httpx                        # needed by FastAPI's TestClient
+ruff                         # linter + formatter
+fpdf2                        # generates the test PDFs
