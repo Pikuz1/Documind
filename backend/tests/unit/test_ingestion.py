@@ -54,6 +54,20 @@ def test_ingest_raises_on_empty_pdf(ingestion, empty_pdf) -> None:
         service.ingest(empty_pdf, "empty.pdf")
 
 
+def test_ingest_removes_vectors_when_sql_insert_fails(ingestion, sample_pdf, monkeypatch) -> None:
+    service, vector_store, repository = ingestion
+
+    def fail(_record):
+        raise RuntimeError("disk full")
+
+    monkeypatch.setattr(repository, "add_document", fail)
+
+    with pytest.raises(RuntimeError, match="disk full"):
+        service.ingest(sample_pdf, "contract.pdf")
+
+    assert vector_store.get()["ids"] == []  # no orphaned chunks left behind
+
+
 def test_delete_removes_vectors_and_sql_row(ingestion, sample_pdf) -> None:
     service, vector_store, repository = ingestion
     record = service.ingest(sample_pdf, "contract.pdf")
