@@ -24,7 +24,7 @@ def test_defaults() -> None:
     assert settings.google_api_key == ""
     assert settings.llm_model == "gemini-3.8-flash"
     assert settings.embedding_model == "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
-    assert settings.data_dir == Path("data")
+    assert settings.data_dir == BACKEND_DIR / "data"
     assert settings.chunk_size == 800
     assert settings.chunk_overlap == 120
     assert settings.top_k == 4
@@ -44,12 +44,22 @@ def test_env_vars_override_defaults(monkeypatch) -> None:
     assert settings.chunk_size == 500
 
 
-def test_derived_paths_come_from_data_dir() -> None:
+def test_relative_data_dir_is_anchored_to_backend_dir() -> None:
     settings = Settings(_env_file=None, data_dir=Path("mydata"))
 
-    assert settings.chroma_dir == Path("mydata/chroma")
-    assert settings.sqlite_path == Path("mydata/documind.db")
-    assert settings.upload_dir == Path("mydata/uploads")
+    assert settings.data_dir == BACKEND_DIR / "mydata"
+
+
+def test_absolute_data_dir_is_kept(tmp_path) -> None:
+    assert Settings(_env_file=None, data_dir=tmp_path).data_dir == tmp_path
+
+
+def test_derived_paths_come_from_data_dir(tmp_path) -> None:
+    settings = Settings(_env_file=None, data_dir=tmp_path)
+
+    assert settings.chroma_dir == tmp_path / "chroma"
+    assert settings.sqlite_path == tmp_path / "documind.db"
+    assert settings.upload_dir == tmp_path / "uploads"
 
 
 def test_get_settings_is_cached_singleton() -> None:
