@@ -10,6 +10,10 @@ export class ApiError extends Error {
   }
 }
 
+export function describeError(error: unknown): string {
+  return error instanceof Error ? error.message : 'Something went wrong. Please try again.'
+}
+
 async function errorMessage(res: Response): Promise<string> {
   const body: unknown = await res.json().catch(() => null)
   // FastAPI sends a string detail for our errors, but a list of field errors for 422s.

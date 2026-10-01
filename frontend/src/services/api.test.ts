@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest'
 import type { DocumentInfo, QueryResult } from '../types'
-import { ApiError, api } from './api'
+import { ApiError, api, describeError } from './api'
 
 const doc: DocumentInfo = {
   id: 'doc-1',
@@ -118,5 +118,15 @@ describe('api', () => {
       status: 0,
       message: 'Could not reach the server. Is the backend running?',
     })
+  })
+})
+
+describe('describeError', () => {
+  it('uses the message of an Error', () => {
+    expect(describeError(new ApiError(404, 'Document not found'))).toBe('Document not found')
+  })
+
+  it('falls back to a generic message for anything else', () => {
+    expect(describeError('boom')).toBe('Something went wrong. Please try again.')
   })
 })
