@@ -5,8 +5,15 @@ from langchain_core.embeddings import DeterministicFakeEmbedding
 from langchain_core.language_models import FakeListChatModel
 
 from app.ai.prompts import NOT_FOUND
-from app.core.rag import RagService
+from app.core.rag import RagAnswer, RagService
 from app.vectorstore.chroma_store import build_vector_store, chunk_ids
+
+
+class ExplodingLLM(FakeListChatModel):
+    """Fails the test if the chain ever reaches the model."""
+
+    def invoke(self, *args, **kwargs):
+        raise AssertionError("LLM should not be called when nothing is relevant")
 
 
 def make_store(docs_by_id: dict[str, list[tuple[str, int]]]):
@@ -38,11 +45,6 @@ def test_answer_returns_llm_response_and_sources() -> None:
 
 def test_answer_returns_not_found_without_calling_llm_when_below_threshold() -> None:
     store = make_store({"doc-1": [("Notice period: three months.", 1)]})
-
-    class ExplodingLLM(FakeListChatModel):
-        def invoke(self, *args, **kwargs):
-            raise AssertionError("LLM should not be called when nothing is relevant")
-
     service = RagService(store, ExplodingLLM(responses=[]), top_k=4, min_score=2.0)
 
     result = service.answer("What is the notice period?", "doc-1")
@@ -67,7 +69,14 @@ def test_answer_keeps_documents_separate_via_filter() -> None:
     assert result.sources[0].text == "Notice period: three months."
 
 
-def test_top_score_is_none_when_no_sources() -> None:
-    from app.core.rag import RagAnswer
+def test_answer_returns_not_found_for_document_without_chunks() -> None:
+    store = make_store({"doc-1": [("Notice period: three months.", 1)]})
+    service = RagService(store, ExplodingLLM(responses=[]), top_k=4, min_score=-1)
 
+    result = service.answer("What is the notice period?", "unknown-doc")
+
+    assert result.answer == NOT_FOUND
+
+
+def test_top_score_is_none_when_no_sources() -> None:
     assert RagAnswer(answer=NOT_FOUND, sources=[]).top_score is None

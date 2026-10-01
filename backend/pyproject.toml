@@ -7,6 +7,10 @@ requires-python = ">=3.12"
 testpaths = ["tests"]
 pythonpath = ["."]
 addopts = "--cov=app --cov-branch --cov-report=term-missing --cov-fail-under=100"
+filterwarnings = [
+    # PyPDFLoader still lives in langchain-community, which now warns on import.
+    "ignore:.*langchain-community.*is being sunset:DeprecationWarning",
+]
 
 [tool.coverage.run]
 omit = ["scripts/*"]
