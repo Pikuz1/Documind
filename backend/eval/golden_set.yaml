@@ -1,0 +1,34 @@
+# Questions about eval/arbeitsvertrag.pdf, each with the page that holds the answer.
+# Mostly English questions against a German contract, to measure cross-lingual retrieval.
+document: arbeitsvertrag.pdf
+questions:
+  - question: When does my employment start?
+    page: 1
+  - question: What is my job title?
+    page: 1
+  - question: How long is the probation period?
+    page: 2
+  - question: What notice period applies during the probation period?
+    page: 2
+  - question: How many hours per week do I have to work?
+    page: 2
+  - question: Do I get paid for overtime?
+    page: 2
+  - question: What is my monthly gross salary?
+    page: 3
+  - question: Do I receive a Christmas bonus?
+    page: 3
+  - question: Wann wird das Gehalt ausgezahlt?
+    page: 3
+  - question: How many vacation days do I get per year?
+    page: 4
+  - question: What do I have to do when I am sick?
+    page: 4
+  - question: Am I allowed to have a side job?
+    page: 5
+  - question: How many days a week can I work from home?
+    page: 5
+  - question: What is the notice period after the probation period?
+    page: 6
+  - question: Gibt es ein Wettbewerbsverbot nach dem Ende des Vertrags?
+    page: 6

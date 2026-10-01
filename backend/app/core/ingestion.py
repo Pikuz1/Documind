@@ -35,13 +35,18 @@ class IngestionService:
 
         document_id = uuid4().hex
         chunks = self._split(pages, document_id, filename)
+        ids = chunk_ids(document_id, len(chunks))
         # Embeds every chunk (via the store's embedding function) and saves the vectors.
-        self._vector_store.add_documents(chunks, ids=chunk_ids(document_id, len(chunks)))
-        return self._repository.add_document(
-            DocumentRecord(
-                id=document_id, filename=filename, page_count=len(pages), chunk_count=len(chunks)
-            )
+        self._vector_store.add_documents(chunks, ids=ids)
+        record = DocumentRecord(
+            id=document_id, filename=filename, page_count=len(pages), chunk_count=len(chunks)
         )
+        try:
+            return self._repository.add_document(record)
+        except Exception:
+            # Two stores, no shared transaction: undo the vectors so Chroma has no orphans.
+            self._vector_store.delete(ids=ids)
+            raise
 
     def delete(self, record: DocumentRecord) -> None:
         self._vector_store.delete(ids=chunk_ids(record.id, record.chunk_count))

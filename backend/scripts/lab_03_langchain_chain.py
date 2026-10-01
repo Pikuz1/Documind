@@ -1,12 +1,9 @@
 """Lab 3 — LangChain LCEL. Run: python scripts/lab_03_langchain_chain.py
 
-Uses Gemini (free tier) here instead of Claude, since this is just a throwaway
-lab script. The app itself still wires up Claude as its LLM (see app/ai/providers.py).
+Needs GOOGLE_API_KEY in backend/.env (free Gemini tier).
 """
 
-from dotenv import (
-    load_dotenv,  # comes with pydantic-settings' deps; else: pip install python-dotenv
-)
+from dotenv import load_dotenv  # installed alongside pydantic-settings
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_google_genai import ChatGoogleGenerativeAI

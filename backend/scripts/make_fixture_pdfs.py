@@ -23,8 +23,7 @@ def make_sample_contract() -> FPDF:
     )
     pdf.multi_cell(0, 10, "Salary: The monthly gross salary is EUR 4,500.\n")
 
-    pdf.add_page()
-    pdf.set_font("Helvetica", size=12)
+    pdf.add_page()  # the font set above carries over to new pages
     pdf.multi_cell(
         0, 10, "Vacation: The employee receives 30 working days of paid vacation per year.\n"
     )
