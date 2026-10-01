@@ -59,7 +59,6 @@ def test_derived_paths_come_from_data_dir(tmp_path) -> None:
 
     assert settings.chroma_dir == tmp_path / "chroma"
     assert settings.sqlite_path == tmp_path / "documind.db"
-    assert settings.upload_dir == tmp_path / "uploads"
 
 
 def test_get_settings_is_cached_singleton() -> None:

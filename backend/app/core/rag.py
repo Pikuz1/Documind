@@ -6,6 +6,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.vectorstores import VectorStore
 
 from app.ai.prompts import NOT_FOUND, RAG_PROMPT
+from app.core.errors import LLMUnavailableError
 
 
 @dataclass(frozen=True)
@@ -23,6 +24,11 @@ class RagAnswer:
     @property
     def top_score(self) -> float | None:
         return max((s.score for s in self.sources), default=None)
+
+    @property
+    def answered(self) -> bool:
+        # The LLM may also decline on its own, so compare the text, not just the sources.
+        return self.answer.strip() != NOT_FOUND
 
 
 def format_context(docs: list[Document]) -> str:
@@ -53,7 +59,12 @@ class RagService:
             return RagAnswer(answer=NOT_FOUND, sources=[])
 
         docs = [doc for doc, _ in relevant]
-        answer = self._chain.invoke({"context": format_context(docs), "question": question})
+        try:
+            answer = self._chain.invoke({"context": format_context(docs), "question": question})
+        except Exception as exc:  # provider SDKs raise many types: quota, network, auth
+            raise LLMUnavailableError(
+                "The answer service is unavailable right now. Please try again later."
+            ) from exc
         return RagAnswer(
             answer=answer,
             sources=[

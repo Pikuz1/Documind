@@ -1,19 +1,15 @@
 from uuid import uuid4
 
+import pytest
 from langchain_core.documents import Document
 from langchain_core.embeddings import DeterministicFakeEmbedding
 from langchain_core.language_models import FakeListChatModel
 
 from app.ai.prompts import NOT_FOUND
-from app.core.rag import RagAnswer, RagService
+from app.core.errors import LLMUnavailableError
+from app.core.rag import RagAnswer, RagService, Source
 from app.vectorstore.chroma_store import build_vector_store, chunk_ids
-
-
-class ExplodingLLM(FakeListChatModel):
-    """Fails the test if the chain ever reaches the model."""
-
-    def invoke(self, *args, **kwargs):
-        raise AssertionError("LLM should not be called when nothing is relevant")
+from tests.fakes import ExplodingLLM, QuotaExceededLLM
 
 
 def make_store(docs_by_id: dict[str, list[tuple[str, int]]]):
@@ -80,3 +76,25 @@ def test_answer_returns_not_found_for_document_without_chunks() -> None:
 
 def test_top_score_is_none_when_no_sources() -> None:
     assert RagAnswer(answer=NOT_FOUND, sources=[]).top_score is None
+
+
+def test_answer_wraps_llm_failures() -> None:
+    store = make_store({"doc-1": [("Notice period: three months.", 1)]})
+    service = RagService(store, QuotaExceededLLM(responses=[]), top_k=4, min_score=-1)
+
+    with pytest.raises(LLMUnavailableError) as exc_info:
+        service.answer("What is the notice period?", "doc-1")
+
+    assert isinstance(exc_info.value.__cause__, RuntimeError)  # original error kept for logs
+
+
+def test_answered_is_true_for_a_real_answer() -> None:
+    source = Source(page=1, text="Notice period: three months.", score=0.8)
+
+    assert RagAnswer(answer="Three months (p. 1).", sources=[source]).answered is True
+
+
+def test_answered_is_false_when_llm_declines_despite_sources() -> None:
+    source = Source(page=1, text="Notice period: three months.", score=0.8)
+
+    assert RagAnswer(answer=f"  {NOT_FOUND}\n", sources=[source]).answered is False

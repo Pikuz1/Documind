@@ -39,10 +39,6 @@ class Settings(BaseSettings):
     def sqlite_path(self) -> Path:
         return self.data_dir / "documind.db"
 
-    @property
-    def upload_dir(self) -> Path:
-        return self.data_dir / "uploads"
-
 
 @lru_cache
 def get_settings() -> Settings:
