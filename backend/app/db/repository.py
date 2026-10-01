@@ -37,11 +37,12 @@ class Repository:
 
     def add_document(self, doc: DocumentRecord) -> DocumentRecord:
         with closing(self._connect()) as conn, conn:  # `with conn` = commit or rollback
-            conn.execute(
-                "INSERT INTO documents (id, filename, page_count, chunk_count) VALUES (?, ?, ?, ?)",
+            row = conn.execute(
+                "INSERT INTO documents (id, filename, page_count, chunk_count)"
+                " VALUES (?, ?, ?, ?) RETURNING *",
                 (doc.id, doc.filename, doc.page_count, doc.chunk_count),  # always parameterised!
-            )
-        return self.get_document(doc.id)  # type: ignore[return-value]
+            ).fetchone()
+        return DocumentRecord(**dict(row))
 
     def get_document(self, doc_id: str) -> DocumentRecord | None:
         with closing(self._connect()) as conn:
@@ -55,8 +56,8 @@ class Repository:
 
     def delete_document(self, doc_id: str) -> bool:
         with closing(self._connect()) as conn, conn:
-            cursor = conn.execute("DELETE FROM documents WHERE id = ?", (doc_id,))
-        return cursor.rowcount > 0
+            deleted = conn.execute("DELETE FROM documents WHERE id = ?", (doc_id,)).rowcount
+        return deleted > 0
 
     def log_query(
         self,
