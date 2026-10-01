@@ -7,8 +7,7 @@ langchain-community           # PyPDFLoader
 langchain-text-splitters     # RecursiveCharacterTextSplitter
 langchain-chroma              # LangChain <-> ChromaDB integration
 langchain-huggingface         # local embedding models in LangChain
-langchain-anthropic           # Claude chat model
-langchain-google-genai        # Gemini chat model (free tier, used for dev/labs)
+langchain-google-genai        # Gemini chat model (free tier)
 chromadb                      # the vector database
 pypdf                         # PDF text extraction (used by PyPDFLoader)
 sentence-transformers         # runs the embedding model locally (pulls in PyTorch)

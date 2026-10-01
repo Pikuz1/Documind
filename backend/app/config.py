@@ -9,8 +9,8 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     ai_provider: Literal["real", "fake"] = "real"
-    anthropic_api_key: str = ""
-    llm_model: str = "claude-haiku-4-5"
+    google_api_key: str = ""
+    llm_model: str = "gemini-3.8-flash"
     embedding_model: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
     data_dir: Path = Path("data")
     chunk_size: int = 800

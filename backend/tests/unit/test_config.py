@@ -7,8 +7,8 @@ def test_defaults() -> None:
     settings = Settings(_env_file=None)
 
     assert settings.ai_provider == "real"
-    assert settings.anthropic_api_key == ""
-    assert settings.llm_model == "claude-haiku-4-5"
+    assert settings.google_api_key == ""
+    assert settings.llm_model == "gemini-3.8-flash"
     assert settings.embedding_model == "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
     assert settings.data_dir == Path("data")
     assert settings.chunk_size == 800

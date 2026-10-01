@@ -1,4 +1,5 @@
 """Lab 1 — what is an embedding? Run: python scripts/lab_01_embeddings.py"""
+
 import numpy as np
 from langchain_huggingface import HuggingFaceEmbeddings
 
@@ -8,12 +9,12 @@ embeddings = HuggingFaceEmbeddings(
 )
 
 sentences = [
-    "Die Kündigungsfrist beträgt drei Monate zum Monatsende.",    # German: notice period
-    "The notice period is three months.",                        # English: same meaning
+    "Die Kündigungsfrist beträgt drei Monate zum Monatsende.",  # German: notice period
+    "The notice period is three months.",  # English: same meaning
     "The employee receives 30 days of paid vacation per year.",  # related domain, other topic
-    "The cat sat on the mat.",                                   # unrelated
+    "The cat sat on the mat.",  # unrelated
 ]
-vectors = embeddings.embed_documents(sentences)   # list[list[float]]
+vectors = embeddings.embed_documents(sentences)  # list[list[float]]
 print(f"Each text → vector with {len(vectors[0])} dimensions")
 
 
@@ -23,5 +24,5 @@ def cosine(a: list[float], b: list[float]) -> float:
 
 
 query = embeddings.embed_query("How long before I can quit my job?")
-for sentence, vector in zip(sentences, vectors):
+for sentence, vector in zip(sentences, vectors, strict=True):
     print(f"{cosine(query, vector):.3f}  {sentence}")
