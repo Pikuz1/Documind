@@ -6,6 +6,15 @@ from langchain_core.embeddings import Embeddings
 COLLECTION = "contract_chunks"
 
 
+def cosine_relevance(distance: float) -> float:
+    """Map Chroma's cosine distance (0..2) to a relevance score (0..1).
+
+    LangChain's default (1 - distance) goes negative for unrelated text, which makes
+    it log a warning containing the matched chunks' text — contract content in logs.
+    """
+    return max(0.0, 1.0 - distance)
+
+
 def build_vector_store(
     embeddings: Embeddings, persist_dir: Path | None, collection: str = COLLECTION
 ) -> Chroma:
@@ -20,6 +29,7 @@ def build_vector_store(
         embedding_function=embeddings,
         persist_directory=str(persist_dir) if persist_dir else None,
         collection_metadata={"hnsw:space": "cosine"},  # distance metric for the index
+        relevance_score_fn=cosine_relevance,
     )
 
 
