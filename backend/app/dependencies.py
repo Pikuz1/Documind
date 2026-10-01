@@ -4,11 +4,13 @@ Routes receive these through FastAPI's Depends(); tests replace them with
 app.dependency_overrides[...]."""
 
 from functools import lru_cache
+from typing import Annotated
 
+from fastapi import Depends
 from langchain_chroma import Chroma
 
 from app.ai.providers import build_embeddings, build_llm
-from app.config import get_settings
+from app.config import Settings, get_settings
 from app.core.ingestion import IngestionService, build_splitter
 from app.core.rag import RagService
 from app.db.repository import Repository
@@ -45,3 +47,9 @@ def get_rag_service() -> RagService:
         top_k=settings.top_k,
         min_score=settings.min_relevance_score,
     )
+
+
+SettingsDep = Annotated[Settings, Depends(get_settings)]
+RepositoryDep = Annotated[Repository, Depends(get_repository)]
+IngestionServiceDep = Annotated[IngestionService, Depends(get_ingestion_service)]
+RagServiceDep = Annotated[RagService, Depends(get_rag_service)]
