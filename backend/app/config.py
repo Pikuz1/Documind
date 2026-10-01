@@ -4,9 +4,14 @@ from typing import Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+BACKEND_DIR = Path(__file__).resolve().parent.parent
+
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    # Anchored to backend/ so the app finds .env no matter which directory it's started from.
+    model_config = SettingsConfigDict(
+        env_file=BACKEND_DIR / ".env", env_file_encoding="utf-8", extra="ignore"
+    )
 
     ai_provider: Literal["real", "fake"] = "real"
     google_api_key: str = ""

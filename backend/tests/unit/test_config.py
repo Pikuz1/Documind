@@ -1,6 +1,20 @@
 from pathlib import Path
 
-from app.config import Settings, get_settings
+from app.config import BACKEND_DIR, Settings, get_settings
+
+
+def test_env_file_is_anchored_to_backend_dir() -> None:
+    env_file = Settings.model_config["env_file"]
+
+    assert env_file == BACKEND_DIR / ".env"
+    assert (BACKEND_DIR / "app" / "config.py").is_file()
+
+
+def test_env_file_is_read(tmp_path) -> None:
+    env_file = tmp_path / ".env"
+    env_file.write_text("TOP_K=9\n", encoding="utf-8")
+
+    assert Settings(_env_file=env_file).top_k == 9
 
 
 def test_defaults() -> None:
