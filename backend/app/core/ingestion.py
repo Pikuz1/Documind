@@ -6,7 +6,7 @@ from langchain_core.documents import Document
 from langchain_core.vectorstores import VectorStore
 from langchain_text_splitters import RecursiveCharacterTextSplitter, TextSplitter
 
-from app.core.errors import EmptyDocumentError
+from app.core.errors import DocumentNotFoundError, EmptyDocumentError
 from app.db.repository import DocumentRecord, Repository
 from app.vectorstore.chroma_store import chunk_ids
 
@@ -48,7 +48,17 @@ class IngestionService:
             self._vector_store.delete(ids=ids)
             raise
 
-    def delete(self, record: DocumentRecord) -> None:
+    def get(self, document_id: str) -> DocumentRecord:
+        record = self._repository.get_document(document_id)
+        if record is None:
+            raise DocumentNotFoundError(f"Document '{document_id}' not found")
+        return record
+
+    def list_documents(self) -> list[DocumentRecord]:
+        return self._repository.list_documents()
+
+    def delete(self, document_id: str) -> None:
+        record = self.get(document_id)
         self._vector_store.delete(ids=chunk_ids(record.id, record.chunk_count))
         self._repository.delete_document(record.id)
 

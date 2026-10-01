@@ -2,6 +2,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BACKEND_DIR = Path(__file__).resolve().parent.parent
@@ -24,6 +25,12 @@ class Settings(BaseSettings):
     min_relevance_score: float = 0.3
     max_upload_mb: int = 10
 
+    @field_validator("data_dir")
+    @classmethod
+    def _anchor_relative_data_dir(cls, value: Path) -> Path:
+        # Same reason as env_file: a relative DATA_DIR must not depend on the working directory.
+        return value if value.is_absolute() else BACKEND_DIR / value
+
     @property
     def chroma_dir(self) -> Path:
         return self.data_dir / "chroma"
@@ -31,10 +38,6 @@ class Settings(BaseSettings):
     @property
     def sqlite_path(self) -> Path:
         return self.data_dir / "documind.db"
-
-    @property
-    def upload_dir(self) -> Path:
-        return self.data_dir / "uploads"
 
 
 @lru_cache

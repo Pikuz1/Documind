@@ -3,7 +3,7 @@ from uuid import uuid4
 import pytest
 from langchain_core.embeddings import DeterministicFakeEmbedding
 
-from app.core.errors import EmptyDocumentError
+from app.core.errors import DocumentNotFoundError, EmptyDocumentError
 from app.core.ingestion import IngestionService, build_splitter
 from app.db.repository import Repository
 from app.vectorstore.chroma_store import build_vector_store
@@ -72,10 +72,38 @@ def test_delete_removes_vectors_and_sql_row(ingestion, sample_pdf) -> None:
     service, vector_store, repository = ingestion
     record = service.ingest(sample_pdf, "contract.pdf")
 
-    service.delete(record)
+    service.delete(record.id)
 
     assert repository.get_document(record.id) is None
     results = vector_store.similarity_search(
         "notice period", k=4, filter={"document_id": record.id}
     )
     assert results == []
+
+
+def test_delete_unknown_document_raises(ingestion) -> None:
+    service, _, _ = ingestion
+
+    with pytest.raises(DocumentNotFoundError):
+        service.delete("missing")
+
+
+def test_get_returns_ingested_record(ingestion, sample_pdf) -> None:
+    service, _, _ = ingestion
+    record = service.ingest(sample_pdf, "contract.pdf")
+
+    assert service.get(record.id) == record
+
+
+def test_get_unknown_document_raises(ingestion) -> None:
+    service, _, _ = ingestion
+
+    with pytest.raises(DocumentNotFoundError, match="missing"):
+        service.get("missing")
+
+
+def test_list_documents_returns_ingested_records(ingestion, sample_pdf) -> None:
+    service, _, _ = ingestion
+    record = service.ingest(sample_pdf, "contract.pdf")
+
+    assert service.list_documents() == [record]
