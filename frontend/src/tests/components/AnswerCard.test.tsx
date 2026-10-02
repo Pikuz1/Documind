@@ -1,7 +1,7 @@
 import { render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
-import { answer, notFound } from '../test/fixtures'
-import { AnswerCard } from './AnswerCard'
+import { answer, notFound } from '../fixtures'
+import { AnswerCard } from '../../components/AnswerCard'
 
 describe('AnswerCard', () => {
   it('renders nothing before a question is asked', () => {

@@ -1,10 +1,5 @@
-import type { QueryResult, Source } from '../types'
-
-export interface AnswerCardProps {
-  result: QueryResult | null
-  loading: boolean
-  error: string | null
-}
+import type { Source } from '../types'
+import type { AnswerCardProps } from '../types/components'
 
 function formatLatency(ms: number): string {
   return ms < 1000 ? `${ms} ms` : `${(ms / 1000).toFixed(1)} s`

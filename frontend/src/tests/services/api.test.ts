@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest'
-import type { DocumentInfo, QueryResult } from '../types'
-import { ApiError, api, describeError } from './api'
+import type { DocumentInfo, QueryResult } from '../../types'
+import { ApiError, api, describeError } from '../../services/api'
 
 const doc: DocumentInfo = {
   id: 'doc-1',

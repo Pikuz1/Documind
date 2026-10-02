@@ -1,10 +1,5 @@
 import { useState, type ChangeEvent, type DragEvent } from 'react'
-
-export interface UploadZoneProps {
-  onUpload: (file: File) => void
-  uploading: boolean
-  error: string | null
-}
+import type { UploadZoneProps } from '../types/components'
 
 function isPdf(file: File): boolean {
   return file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')

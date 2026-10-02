@@ -1,12 +1,4 @@
-import type { DocumentInfo } from '../types'
-
-export interface DocumentListProps {
-  documents: DocumentInfo[]
-  selectedId: string | null
-  onSelect: (id: string) => void
-  onDelete: (id: string) => void
-  loading: boolean
-}
+import type { DocumentListProps } from '../types/components'
 
 export function DocumentList({
   documents,

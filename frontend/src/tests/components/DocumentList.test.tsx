@@ -1,8 +1,9 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
-import { contract, lease } from '../test/fixtures'
-import { DocumentList, type DocumentListProps } from './DocumentList'
+import { contract, lease } from '../fixtures'
+import { DocumentList } from '../../components/DocumentList'
+import type { DocumentListProps } from '../../types/components'
 
 function setup(props: Partial<DocumentListProps> = {}) {
   const onSelect = vi.fn()

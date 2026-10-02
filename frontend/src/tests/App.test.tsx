@@ -1,10 +1,10 @@
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import App from './App'
-import { api } from './services/api'
-import { answer, contract, lease, pdfFile } from './test/fixtures'
-import type { DocumentInfo } from './types'
+import App from '../App'
+import { api } from '../services/api'
+import { answer, contract, lease, pdfFile } from './fixtures'
+import type { DocumentInfo } from '../types'
 
 afterEach(() => {
   vi.restoreAllMocks()

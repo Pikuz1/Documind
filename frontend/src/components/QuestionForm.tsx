@@ -1,12 +1,7 @@
 import { useState, type FormEvent, type KeyboardEvent } from 'react'
+import type { QuestionFormProps } from '../types/components'
 
 const MAX_LENGTH = 500 // matches QueryIn.question on the backend
-
-export interface QuestionFormProps {
-  onAsk: (question: string) => void
-  loading: boolean
-  disabled?: boolean
-}
 
 export function QuestionForm({ onAsk, loading, disabled = false }: QuestionFormProps) {
   const [question, setQuestion] = useState('')

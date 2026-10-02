@@ -1,9 +1,9 @@
 import { act, renderHook, waitFor } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { ApiError, api } from '../services/api'
-import { contract, deferred, lease, pdfFile } from '../test/fixtures'
-import type { DocumentInfo } from '../types'
-import { useDocuments } from './useDocuments'
+import { ApiError, api } from '../../services/api'
+import { contract, deferred, lease, pdfFile } from '../fixtures'
+import type { DocumentInfo } from '../../types'
+import { useDocuments } from '../../hooks/useDocuments'
 
 afterEach(() => {
   vi.restoreAllMocks()

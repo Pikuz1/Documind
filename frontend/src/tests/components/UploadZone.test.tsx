@@ -1,8 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
-import { pdfFile } from '../test/fixtures'
-import { UploadZone, type UploadZoneProps } from './UploadZone'
+import { pdfFile } from '../fixtures'
+import { UploadZone } from '../../components/UploadZone'
+import type { UploadZoneProps } from '../../types/components'
 
 function setup(props: Partial<UploadZoneProps> = {}) {
   const onUpload = vi.fn()
