@@ -16,7 +16,9 @@ class Settings(BaseSettings):
 
     ai_provider: Literal["real", "fake"] = "real"
     google_api_key: str = ""
-    llm_model: str = "gemini-3.8-flash"
+    llm_model: str = "gemini-3.5-flash-lite"
+    # Only for "thinking" models (e.g. gemini-3.8-flash: set 0); lite models reject it.
+    llm_thinking_budget: int | None = None
     embedding_model: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
     data_dir: Path = Path("data")
     chunk_size: int = 800

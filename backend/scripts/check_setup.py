@@ -76,10 +76,11 @@ def main() -> int:
         from langchain_google_genai import ChatGoogleGenerativeAI
 
         load_dotenv()
+        budget = os.getenv("LLM_THINKING_BUDGET")  # same rule as the app: only if configured
         llm = ChatGoogleGenerativeAI(
-            model=os.getenv("LLM_MODEL", "gemini-3.8-flash"),
+            model=os.getenv("LLM_MODEL", "gemini-3.5-flash-lite"),
             max_output_tokens=20,
-            thinking_budget=0,
+            **({"thinking_budget": int(budget)} if budget else {}),
         )
         reply = (llm | StrOutputParser()).invoke("Reply with exactly: ready")
         print(f"✅ LLM replied: {reply}")

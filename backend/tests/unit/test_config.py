@@ -22,7 +22,8 @@ def test_defaults() -> None:
 
     assert settings.ai_provider == "real"
     assert settings.google_api_key == ""
-    assert settings.llm_model == "gemini-3.8-flash"
+    assert settings.llm_model == "gemini-3.5-flash-lite"
+    assert settings.llm_thinking_budget is None
     assert settings.embedding_model == "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
     assert settings.data_dir == BACKEND_DIR / "data"
     assert settings.chunk_size == 800
