@@ -4,8 +4,10 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.api.routes import documents, health, query
+from app.config import Settings, get_settings
 from app.core.errors import DocumentNotFoundError, EmptyDocumentError, LLMUnavailableError
 from app.dependencies import get_ingestion_service, get_rag_service
 
@@ -34,12 +36,16 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     yield
 
 
-def create_app() -> FastAPI:
+def create_app(settings: Settings | None = None) -> FastAPI:
+    settings = settings or get_settings()
     app = FastAPI(title="DocuMind API", version="0.1.0", lifespan=lifespan)
     for router in (health.router, documents.router, query.router):
         app.include_router(router, prefix="/api")
     for error_type in ERROR_STATUS:
         app.add_exception_handler(error_type, handle_domain_error)
+    # Mounted last: "/" matches everything, so /api routes must be registered first.
+    if settings.static_dir and settings.static_dir.is_dir():
+        app.mount("/", StaticFiles(directory=settings.static_dir, html=True), name="ui")
     return app
 
 

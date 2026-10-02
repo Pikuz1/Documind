@@ -63,3 +63,12 @@ def test_derived_paths_come_from_data_dir(tmp_path) -> None:
 
 def test_get_settings_is_cached_singleton() -> None:
     assert get_settings() is get_settings()
+
+
+def test_static_dir_defaults_to_none() -> None:
+    assert Settings(_env_file=None).static_dir is None
+
+
+def test_relative_static_dir_is_anchored_and_absolute_kept(tmp_path) -> None:
+    assert Settings(_env_file=None, static_dir=Path("ui")).static_dir == BACKEND_DIR / "ui"
+    assert Settings(_env_file=None, static_dir=tmp_path).static_dir == tmp_path
