@@ -31,10 +31,15 @@ def build_llm(settings: Settings) -> BaseChatModel:
         )
     from langchain_google_genai import ChatGoogleGenerativeAI
 
+    thinking = (
+        {}
+        if settings.llm_thinking_budget is None
+        else {"thinking_budget": settings.llm_thinking_budget}
+    )
     return ChatGoogleGenerativeAI(
         model=settings.llm_model,
         google_api_key=settings.google_api_key,
-        temperature=0,  # deterministic, factual answers
+        temperature=0,  # deterministic, factual answers (lite models use fixed sampling)
         max_output_tokens=1024,
-        thinking_budget=0,  # no extended reasoning needed for grounded contract Q&A
+        **thinking,
     )
