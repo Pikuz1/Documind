@@ -1,0 +1,15 @@
+services:
+  app:
+    build: .
+    image: documind:latest
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env # GOOGLE_API_KEY, or AI_PROVIDER=fake; copy it from backend/.env.example
+    environment:
+      DATA_DIR: /data
+    volumes:
+      - app-data:/data # named volume: works the same on every OS
+
+volumes:
+  app-data:
