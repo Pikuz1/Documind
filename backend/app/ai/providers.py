@@ -23,6 +23,12 @@ def build_llm(settings: Settings) -> BaseChatModel:
     """Return the chat model that writes answers."""
     if settings.ai_provider == "fake":
         return FakeListChatModel(responses=[FAKE_ANSWER])
+    if not settings.google_api_key:
+        # Fail at startup with a fix, instead of the SDK's long validation traceback.
+        raise ValueError(
+            "GOOGLE_API_KEY is not set. Add it to backend/.env, "
+            "or set AI_PROVIDER=fake to run without real answers."
+        )
     from langchain_google_genai import ChatGoogleGenerativeAI
 
     return ChatGoogleGenerativeAI(

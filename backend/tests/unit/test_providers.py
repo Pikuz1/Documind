@@ -1,3 +1,4 @@
+import pytest
 from langchain_core.embeddings import DeterministicFakeEmbedding
 from langchain_core.language_models import FakeListChatModel
 
@@ -56,3 +57,8 @@ def test_build_llm_returns_real_model_with_expected_args(monkeypatch) -> None:
     assert captured["google_api_key"] == "test-key"
     assert captured["temperature"] == 0
     assert captured["thinking_budget"] == 0
+
+
+def test_build_llm_requires_an_api_key_in_real_mode() -> None:
+    with pytest.raises(ValueError, match="GOOGLE_API_KEY is not set.*AI_PROVIDER=fake"):
+        build_llm(fake_settings(ai_provider="real", google_api_key=""))
