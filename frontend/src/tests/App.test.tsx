@@ -22,8 +22,8 @@ describe('App', () => {
     await renderApp()
 
     expect(screen.getByRole('heading', { level: 1, name: 'DocuMind' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent(contract.filename)
-    expect(screen.getByText('6 pages · 12 indexed passages')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: contract.filename })).toBeInTheDocument()
+    expect(screen.getByText('6 pages · 12 indexed passages · Uploaded Oct 2, 2026')).toBeInTheDocument()
   })
 
   it('prompts for a document when there are none', async () => {
@@ -39,7 +39,9 @@ describe('App', () => {
 
     await user.type(screen.getByTestId('question-input'), 'What is the notice period?{Enter}')
 
-    expect(await screen.findByTestId('answer-card')).toHaveTextContent(answer.answer)
+    const card = await screen.findByTestId('answer-card')
+    expect(card).toHaveTextContent('The notice period is three months to the end of the month')
+    expect(within(card).getByRole('link', { name: 'p. 6' })).toHaveAttribute('href', '#source-page-6')
     expect(screen.getAllByTestId('source-item')).toHaveLength(2)
     expect(api.ask).toHaveBeenCalledWith(contract.id, 'What is the notice period?')
   })
@@ -52,7 +54,7 @@ describe('App', () => {
 
     await user.click(screen.getByRole('button', { name: /^rental_agreement/ }))
 
-    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent(lease.filename)
+    expect(screen.getByRole('heading', { level: 2, name: lease.filename })).toBeInTheDocument()
     expect(screen.queryByTestId('answer-card')).not.toBeInTheDocument()
   })
 
@@ -63,7 +65,7 @@ describe('App', () => {
     await user.upload(screen.getByTestId('upload-input'), pdfFile(contract.filename))
 
     await waitFor(() =>
-      expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent(contract.filename),
+      expect(screen.getByRole('heading', { level: 2, name: contract.filename })).toBeInTheDocument(),
     )
     const items = within(screen.getByRole('list', { name: 'Documents' })).getAllByRole('listitem')
     expect(items[0]).toHaveTextContent(contract.filename)

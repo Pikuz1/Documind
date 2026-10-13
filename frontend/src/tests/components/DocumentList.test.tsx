@@ -71,4 +71,12 @@ describe('DocumentList', () => {
     expect(onDelete).toHaveBeenCalledWith(lease.id)
     expect(onSelect).not.toHaveBeenCalled()
   })
+
+  it('shows when each document was uploaded', () => {
+    setup()
+
+    const items = within(screen.getByRole('list', { name: 'Documents' })).getAllByRole('listitem')
+    expect(items[0]).toHaveTextContent('Oct 2, 2026')
+    expect(items[1]).toHaveTextContent('Oct 1, 2026')
+  })
 })

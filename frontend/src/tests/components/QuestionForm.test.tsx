@@ -97,4 +97,34 @@ describe('QuestionForm', () => {
     expect(input).toHaveAttribute('maxLength', '500')
     expect(screen.getByText(/^5\/500/)).toBeInTheDocument()
   })
+
+  it('asks a suggested question in one click', async () => {
+    const { onAsk, input, user } = setup()
+
+    await user.click(screen.getByRole('button', { name: 'Wie lange ist die Probezeit?' }))
+
+    expect(onAsk).toHaveBeenCalledWith('Wie lange ist die Probezeit?')
+    expect(input).toHaveValue('Wie lange ist die Probezeit?')
+    expect(screen.queryByRole('button', { name: 'What is the notice period?' })).not.toBeInTheDocument()
+  })
+
+  it('hides the suggestions once the user starts typing', async () => {
+    const { input, user } = setup()
+
+    await user.type(input, 'W')
+
+    expect(screen.queryByText('Try:')).not.toBeInTheDocument()
+  })
+
+  it('disables the suggestions while an answer is loading', () => {
+    setup({ loading: true })
+
+    expect(screen.getByRole('button', { name: 'What is the notice period?' })).toBeDisabled()
+  })
+
+  it('shows no suggestions when the form is disabled', () => {
+    setup({ disabled: true })
+
+    expect(screen.queryByText('Try:')).not.toBeInTheDocument()
+  })
 })
