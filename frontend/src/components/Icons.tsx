@@ -43,6 +43,13 @@ export function TrashIcon({ className }: IconProps) {
   )
 }
 
+export function SendIcon({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <path d="M12 19V5M5 12l7-7 7 7" />
+    </Svg>
+  )
+}
 
 export function SparklesIcon({ className }: IconProps) {
   return (
@@ -68,6 +75,14 @@ export function ShieldCheckIcon({ className }: IconProps) {
   )
 }
 
+export function InfoIcon({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 11v5M12 8h.01" />
+    </Svg>
+  )
+}
 
 export function AlertIcon({ className }: IconProps) {
   return (
@@ -78,6 +93,13 @@ export function AlertIcon({ className }: IconProps) {
   )
 }
 
+export function ChevronIcon({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <path d="M9 6l6 6-6 6" />
+    </Svg>
+  )
+}
 
 export function Spinner({ className = 'size-4' }: IconProps) {
   return (

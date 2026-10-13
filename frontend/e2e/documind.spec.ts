@@ -3,8 +3,10 @@ import path from 'node:path'
 import { expect, test, type Page } from '@playwright/test'
 
 const FIXTURES = path.join(import.meta.dirname, 'fixtures')
-// What the backend's fake LLM always answers (FAKE_ANSWER in app/ai/providers.py).
-const FAKE_ANSWER = 'According to the document, the notice period is three months (p. 1).'
+// The backend's fake LLM always answers FAKE_ANSWER (app/ai/providers.py):
+// "According to the document, the notice period is three months (p. 1)."
+// The UI renders the "(p. 1)" citation as a badge, so text and badge are checked separately.
+const FAKE_ANSWER_TEXT = 'According to the document, the notice period is three months'
 
 /** Uploads a fixture under a test-specific name, so tests sharing one backend never collide. */
 async function upload(page: Page, fixture: string, name: string) {
@@ -34,7 +36,8 @@ test('uploads a contract and answers a question with sources', async ({ page }) 
   await page.getByTestId('ask-button').click()
 
   const answerCard = page.getByTestId('answer-card')
-  await expect(answerCard).toContainText(FAKE_ANSWER)
+  await expect(answerCard).toContainText(FAKE_ANSWER_TEXT)
+  await expect(answerCard.getByText('p. 1', { exact: true })).toBeVisible()
   await expect(page.getByTestId('source-item').first()).toBeVisible()
 })
 

@@ -39,7 +39,9 @@ describe('App', () => {
 
     await user.type(screen.getByTestId('question-input'), 'What is the notice period?{Enter}')
 
-    expect(await screen.findByTestId('answer-card')).toHaveTextContent(answer.answer)
+    const card = await screen.findByTestId('answer-card')
+    expect(card).toHaveTextContent('The notice period is three months to the end of the month')
+    expect(within(card).getByRole('link', { name: 'p. 6' })).toHaveAttribute('href', '#source-page-6')
     expect(screen.getAllByTestId('source-item')).toHaveLength(2)
     expect(api.ask).toHaveBeenCalledWith(contract.id, 'What is the notice period?')
   })
