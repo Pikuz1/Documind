@@ -79,10 +79,10 @@ describe('UploadZone', () => {
     const { dropZone } = setup()
 
     fireEvent.dragOver(dropZone)
-    expect(dropZone).toHaveClass('border-slate-700')
+    expect(dropZone).toHaveClass('border-indigo-500')
 
     fireEvent.dragLeave(dropZone)
-    expect(dropZone).not.toHaveClass('border-slate-700')
+    expect(dropZone).not.toHaveClass('border-indigo-500')
   })
 
   it('ignores drops while uploading and drops without files', () => {

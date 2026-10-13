@@ -1,1 +1,14 @@
 @import "tailwindcss";
+
+@theme {
+  /* Falls back to the system font when Google Fonts can't load (e.g. offline). */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth; /* citation badges jump to their source passage */
+}
+
+body {
+  @apply bg-slate-50 text-slate-900 antialiased;
+}
