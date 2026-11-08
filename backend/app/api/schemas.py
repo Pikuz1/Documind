@@ -3,6 +3,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 class HealthOut(BaseModel):
     status: str
+    demo: bool  # the frontend hides upload and delete in the public demo
 
 
 class DocumentOut(BaseModel):

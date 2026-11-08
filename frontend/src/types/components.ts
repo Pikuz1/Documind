@@ -16,11 +16,16 @@ export interface UploadZoneProps {
   error: string | null
 }
 
+export interface DemoNoticeProps {
+  error: string | null
+}
+
 export interface DocumentListProps {
   documents: DocumentInfo[]
   selectedId: string | null
   onSelect: (id: string) => void
-  onDelete: (id: string) => void
+  /** Leave out to hide the delete buttons (public demo). */
+  onDelete?: (id: string) => void
   loading: boolean
 }
 

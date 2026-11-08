@@ -22,6 +22,13 @@ function setup(props: Partial<DocumentListProps> = {}) {
 }
 
 describe('DocumentList', () => {
+  it('hides the delete buttons without onDelete', () => {
+    setup({ onDelete: undefined })
+
+    expect(screen.getAllByRole('listitem')).toHaveLength(2)
+    expect(screen.queryByRole('button', { name: /^Delete/ })).not.toBeInTheDocument()
+  })
+
   it('shows a loading state', () => {
     setup({ loading: true })
 

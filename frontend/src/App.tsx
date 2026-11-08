@@ -1,15 +1,18 @@
 import { AnswerCard } from './components/AnswerCard'
+import { DemoNotice } from './components/DemoNotice'
 import { DocumentList } from './components/DocumentList'
 import { DocumentIcon } from './components/Icons'
 import { QuestionForm } from './components/QuestionForm'
 import { UploadZone } from './components/UploadZone'
 import { Welcome } from './components/Welcome'
 import { useAsk } from './hooks/useAsk'
+import { useDemoMode } from './hooks/useDemoMode'
 import { useDocuments } from './hooks/useDocuments'
 import { formatUploadDate, pluralize } from './utils/format'
 
 function App() {
   const docs = useDocuments()
+  const demo = useDemoMode()
   const asking = useAsk(docs.selectedId)
   const selected = docs.documents.find((doc) => doc.id === docs.selectedId) ?? null
 
@@ -40,7 +43,11 @@ function App() {
             selected ? 'order-last' : ''
           }`}
         >
-          <UploadZone onUpload={docs.upload} uploading={docs.uploading} error={docs.error} />
+          {demo ? (
+            <DemoNotice error={docs.error} />
+          ) : (
+            <UploadZone onUpload={docs.upload} uploading={docs.uploading} error={docs.error} />
+          )}
           <section
             aria-labelledby="documents-heading"
             className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm"
@@ -55,7 +62,7 @@ function App() {
               documents={docs.documents}
               selectedId={docs.selectedId}
               onSelect={docs.select}
-              onDelete={docs.remove}
+              onDelete={demo ? undefined : docs.remove}
               loading={docs.loading}
             />
           </section>

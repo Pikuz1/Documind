@@ -73,3 +73,17 @@ def test_static_dir_defaults_to_none() -> None:
 def test_relative_static_dir_is_anchored_and_absolute_kept(tmp_path) -> None:
     assert Settings(_env_file=None, static_dir=Path("ui")).static_dir == BACKEND_DIR / "ui"
     assert Settings(_env_file=None, static_dir=tmp_path).static_dir == tmp_path
+
+
+def test_demo_mode_is_off_by_default() -> None:
+    settings = Settings(_env_file=None)
+
+    assert settings.demo_document is None
+    assert settings.demo_mode is False
+
+
+def test_demo_document_turns_demo_mode_on_and_is_anchored() -> None:
+    settings = Settings(_env_file=None, demo_document=Path("eval/arbeitsvertrag.pdf"))
+
+    assert settings.demo_document == BACKEND_DIR / "eval" / "arbeitsvertrag.pdf"
+    assert settings.demo_mode is True

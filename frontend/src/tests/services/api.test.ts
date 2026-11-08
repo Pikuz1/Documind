@@ -40,6 +40,13 @@ function lastRequest(): [string, RequestInit | undefined] {
 }
 
 describe('api', () => {
+  it('reads the health status', async () => {
+    fetchSpy.mockResolvedValue(jsonResponse({ status: 'ok', demo: true }))
+
+    await expect(api.health()).resolves.toEqual({ status: 'ok', demo: true })
+    expect(lastRequest()).toEqual(['/api/health', undefined])
+  })
+
   it('lists documents', async () => {
     fetchSpy.mockResolvedValue(jsonResponse([doc]))
 
