@@ -27,14 +27,20 @@ class Settings(BaseSettings):
     min_relevance_score: float = 0.3
     max_upload_mb: int = 10
     static_dir: Path | None = None  # built frontend to serve at "/" (set in the Docker image)
+    # Public demo: this PDF is indexed at startup, and uploads and deletes are refused.
+    demo_document: Path | None = None
 
-    @field_validator("data_dir", "static_dir")
+    @field_validator("data_dir", "static_dir", "demo_document")
     @classmethod
     def _anchor_relative_paths(cls, value: Path | None) -> Path | None:
         # Same reason as env_file: relative paths must not depend on the working directory.
         if value is None or value.is_absolute():
             return value
         return BACKEND_DIR / value
+
+    @property
+    def demo_mode(self) -> bool:
+        return self.demo_document is not None
 
     @property
     def chroma_dir(self) -> Path:

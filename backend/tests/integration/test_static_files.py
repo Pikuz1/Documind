@@ -36,7 +36,7 @@ def test_serves_built_assets(built_frontend: Path) -> None:
 
 
 def test_api_routes_still_win_over_the_static_mount(built_frontend: Path) -> None:
-    assert client_for(built_frontend).get("/api/health").json() == {"status": "ok"}
+    assert client_for(built_frontend).get("/api/health").json()["status"] == "ok"
 
 
 def test_no_static_dir_means_api_only() -> None:

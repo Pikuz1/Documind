@@ -5,6 +5,7 @@ from fastapi import APIRouter, HTTPException, UploadFile, status
 from starlette.concurrency import run_in_threadpool
 
 from app.api.schemas import DocumentOut, DocumentStatsOut
+from app.config import Settings
 from app.core.ingestion import IngestionService
 from app.db.repository import DocumentRecord
 from app.dependencies import IngestionServiceDep, RepositoryDep, SettingsDep
@@ -12,6 +13,12 @@ from app.dependencies import IngestionServiceDep, RepositoryDep, SettingsDep
 router = APIRouter(prefix="/documents", tags=["documents"])
 
 PDF_SIGNATURE = b"%PDF-"
+
+
+def _refuse_in_demo(settings: Settings) -> None:
+    # Everyone shares the public demo's documents, so nobody may add or remove any.
+    if settings.demo_mode:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "The public demo is read-only")
 
 
 def _ingest_bytes(service: IngestionService, content: bytes, filename: str) -> DocumentRecord:
@@ -26,6 +33,7 @@ def _ingest_bytes(service: IngestionService, content: bytes, filename: str) -> D
 async def upload_document(
     file: UploadFile, service: IngestionServiceDep, settings: SettingsDep
 ) -> DocumentOut:
+    _refuse_in_demo(settings)
     max_bytes = settings.max_upload_mb * 1024 * 1024
     content = await file.read(max_bytes + 1)  # one byte over is enough to detect "too large"
     if len(content) > max_bytes:
@@ -48,7 +56,8 @@ def list_documents(service: IngestionServiceDep) -> list[DocumentOut]:
 
 
 @router.delete("/{document_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_document(document_id: str, service: IngestionServiceDep) -> None:
+def delete_document(document_id: str, service: IngestionServiceDep, settings: SettingsDep) -> None:
+    _refuse_in_demo(settings)
     service.delete(document_id)
 
 
