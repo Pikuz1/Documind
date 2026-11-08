@@ -26,6 +26,8 @@ SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
 ENV HF_HUB_OFFLINE=1
 
 COPY backend/app ./app
+# Synthetic sample contract for the public demo (used only when DEMO_DOCUMENT points to it).
+COPY backend/eval/arbeitsvertrag.pdf ./demo/arbeitsvertrag.pdf
 COPY --from=frontend /frontend/dist ./static
 
 RUN useradd --create-home --uid 1000 documind \
