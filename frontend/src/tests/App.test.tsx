@@ -10,7 +10,8 @@ afterEach(() => {
   vi.restoreAllMocks()
 })
 
-async function renderApp(documents: DocumentInfo[] = [contract, lease]) {
+async function renderApp(documents: DocumentInfo[] = [contract, lease], demo = false) {
+  vi.spyOn(api, 'health').mockResolvedValue({ status: 'ok', demo })
   vi.spyOn(api, 'listDocuments').mockResolvedValue(documents)
   render(<App />)
   await waitFor(() => expect(screen.queryByText('Loading documents…')).not.toBeInTheDocument())
@@ -79,5 +80,14 @@ describe('App', () => {
 
     expect(await screen.findByText(/No documents yet/)).toBeInTheDocument()
     expect(screen.getByText(/Upload or select a contract/)).toBeInTheDocument()
+  })
+
+  it('shows the demo notice instead of upload and delete in the public demo', async () => {
+    await renderApp([contract], true)
+
+    expect(await screen.findByText('Public demo')).toBeInTheDocument()
+    expect(screen.queryByTestId('upload-input')).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /^Delete/ })).not.toBeInTheDocument()
+    expect(screen.getByTestId('question-input')).toBeInTheDocument()
   })
 })

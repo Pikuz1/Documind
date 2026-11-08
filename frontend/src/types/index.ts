@@ -1,5 +1,10 @@
 // Mirrors the backend's Pydantic response models (backend/app/api/schemas.py).
 
+export interface HealthInfo {
+  status: string
+  demo: boolean
+}
+
 export interface DocumentInfo {
   id: string
   filename: string

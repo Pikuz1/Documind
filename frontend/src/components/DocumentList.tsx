@@ -60,15 +60,17 @@ export function DocumentList({
                 </span>
               </span>
             </button>
-            <button
-              type="button"
-              onClick={() => onDelete(doc.id)}
-              aria-label={`Delete ${doc.filename}`}
-              title="Delete"
-              className="mr-1 rounded-lg p-3.5 text-slate-400 sm:mr-1.5 sm:p-2 transition hover:bg-red-50 hover:text-red-600 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-200 sm:opacity-0 sm:group-hover:opacity-100"
-            >
-              <TrashIcon className="size-4" />
-            </button>
+            {onDelete && (
+              <button
+                type="button"
+                onClick={() => onDelete(doc.id)}
+                aria-label={`Delete ${doc.filename}`}
+                title="Delete"
+                className="mr-1 rounded-lg p-3.5 text-slate-400 sm:mr-1.5 sm:p-2 transition hover:bg-red-50 hover:text-red-600 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-200 sm:opacity-0 sm:group-hover:opacity-100"
+              >
+                <TrashIcon className="size-4" />
+              </button>
+            )}
           </li>
         )
       })}

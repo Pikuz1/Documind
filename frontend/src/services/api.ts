@@ -1,4 +1,4 @@
-import type { DocumentInfo, QueryResult } from '../types'
+import type { DocumentInfo, HealthInfo, QueryResult } from '../types'
 
 export class ApiError extends Error {
   readonly status: number
@@ -37,6 +37,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
+  health: () => request<HealthInfo>('/health'),
+
   listDocuments: () => request<DocumentInfo[]>('/documents'),
 
   uploadDocument: (file: File) => {
